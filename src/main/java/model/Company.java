@@ -3,7 +3,7 @@ package model;
 import static model.CompanyDepartaments.*;
 
 public class Company {
-    Employee[] employees;
+    private Employee[] employees;
     private double averageSalary;
     private double lowestSalary;
     private double highestSalary;

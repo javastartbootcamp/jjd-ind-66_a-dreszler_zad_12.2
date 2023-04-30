@@ -21,24 +21,38 @@ public class FileUtils {
             int employeesRead = 0;
             employees = new Employee[lines];
 
-            for (int i = 0; input.hasNextLine(); i++) {
+            for (int i = 0; input.hasNextLine(); ) {
                 String[] splitEmployee = input.nextLine().split(";");
                 employees[i] = fillEmployee(splitEmployee);
-                if (employees[i] == null) {
-                    i--;
-                } else {
+                if (employees[i] != null) {
+                    i++;
                     employeesRead++;
                 }
             }
-
             if (employeesRead != lines) {
                 employees = Arrays.copyOf(employees, employeesRead);
             }
-        } catch (FileNotFoundException | FileReadFailureException e) {
+        } catch (FileNotFoundException e) {
             throw new FileReadFailureException("Nie znaleziono pliku: " + filePath, e);
         }
 
         return employees;
+    }
+
+    private static int countLines(String filePath) {
+        int lines = 0;
+        try (
+                Scanner input = new Scanner(new File(filePath))
+        ) {
+            while (input.hasNextLine()) {
+                input.nextLine();
+                lines++;
+            }
+        } catch (FileNotFoundException e) {
+            throw new FileReadFailureException("Nie znaleziono pliku: " + filePath, e);
+        }
+
+        return lines;
     }
 
     private static Employee fillEmployee(String[] splitEmployee) {
@@ -56,22 +70,6 @@ public class FileUtils {
         }
 
         return employee;
-    }
-
-    private static int countLines(String filePath) {
-        int lines = 0;
-        try (
-                Scanner input = new Scanner(new File(filePath))
-        ) {
-            while (input.hasNextLine()) {
-                input.nextLine();
-                lines++;
-            }
-        } catch (FileNotFoundException e) {
-            throw new FileReadFailureException("Nie znaleziono pliku: " + filePath, e);
-        }
-
-        return lines;
     }
 
     public static void saveToFile(String stats, String filePath) {
